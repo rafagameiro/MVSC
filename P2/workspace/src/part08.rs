@@ -15,11 +15,11 @@ fn overflowing_add(a: u64, b: u64, carry: bool) -> (u64, bool) {
     if sum >= a {
         // The addition did not overflow. <br/>
         // **Exercise 08.1**: Write the code to handle adding the carry in this case.
-        unimplemented!()
+        (sum, false)
     } else {
         // Otherwise, the addition *did* overflow. It is impossible for the addition of the carry
         // to overflow again, as we are just adding 0 or 1.
-        unimplemented!()
+        (sum + if carry { 1 } else { 0 }, true)
     }
 }
 
@@ -52,7 +52,9 @@ impl ops::Add<BigInt> for BigInt {
             let rhs_val = if i < rhs.data.len() { rhs.data[i] } else { 0 };
             // Compute next digit and carry. Then, store the digit for the result, and the carry
             // for later.
-            unimplemented!()
+            let (sum, new_carry) = overflowing_add(lhs_val, rhs_val, carry);
+            result_vec.push(sum);
+            carry = new_carry;
         }
         // **Exercise 08.2**: Handle the final `carry`, and return the sum.
         unimplemented!()

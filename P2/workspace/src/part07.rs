@@ -24,7 +24,26 @@ pub fn vec_min<T: Minimum>(v: &Vec<T>) -> Option<&T> {
 // exercise 06.1. You should *not* make any copies of `BigInt`!
 impl Minimum for BigInt {
     fn min<'a>(&'a self, other: &'a Self) -> &'a Self {
-        unimplemented!()
+        debug_assert!(self.test_invariant() && other.test_invariant());
+        // Now our assumption of having no trailing zeros comes in handy:
+        // If the lengths of the two numbers differ, we already know which is larger.
+        if self.data.len() < other.data.len() {
+            self
+        } else if self.data.len() > other.data.len() {
+            other
+        } else {
+            // **Exercise 06.1**: Fill in this code.
+            let start = self.data.len() - 1;
+            for e in 0..self.data.len() {
+                    
+                if self.data[start - e] < other.data[start - e] { 
+                    return self;
+                } else if other.data[start - e] < self.data[start - e] { 
+                    return other; 
+                } else {}
+            }
+            self
+        }
     }
 }
 
@@ -34,7 +53,7 @@ impl PartialEq for BigInt {
     #[inline]
     fn eq(&self, other: &BigInt) -> bool {
         debug_assert!(self.test_invariant() && other.test_invariant());
-        unimplemented!()
+        self.data == other.data
     }
 }
 
@@ -55,7 +74,8 @@ fn test_min() {
     let b2 = BigInt::new(42);
     let b3 = BigInt::from_vec(vec![0, 1]);
 
-    unimplemented!()
+    assert!(*b1.min(&b2) == b1);
+    assert!(*b3.min(&b2) == b2);
 }
 // Now run `cargo test` to execute the test. If you implemented `min` correctly, it should all work!
 
@@ -80,7 +100,8 @@ fn test_vec_min() {
 
     let v1 = vec![b2.clone(), b1.clone(), b3.clone()];
     let v2 = vec![b2.clone(), b3.clone()];
-    unimplemented!()
+    assert_eq!(vec_min(&v1), Some(&b1));
+    assert_eq!(vec_min(&v2), Some(&b2));
 }
 
 // **Exercise 07.1**: Add some more testcases. In particular, make sure you test the behavior of
