@@ -1,0 +1,16 @@
+
+
+Your answer on starvation goes here.
+
+
+R: Our buffer guarantees mutual exclusion through the use of a shared channel 
+(access) between all worker threads and this properties is also what provides
+starvation freedom. When a worker attempts to add a new element to a buffer 
+that is not full, it will succeed and launch a go routine to send a signal 
+through the shared access channel, so that it doesn't get blocked waiting for
+another worker to receive the signal, the exact same happens when a worker 
+attempts to remove an element from a buffer that is not empty. When neither 
+of theses conditions are true, and a worker attempts to add an element to a 
+full array, or remove from an empty array, the worker itself will send the 
+signal through the shared access channel, guaranteeing that a different 
+worker (the one that receives the signal) will access the critical area.
